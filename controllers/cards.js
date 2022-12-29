@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../utils/constants');
 
 module.exports.createCard = (req, res) => {
   Card.create({ ...req.body, owner: req.user._id })
@@ -6,9 +7,9 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки' });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -19,12 +20,12 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
 ).populate(['owner', 'likes'])
   // eslint-disable-next-line consistent-return
   .then((card) => {
-    if (card === null) { return res.status(404).send({ message: 'Карточка с таким id не найдена' }); }
+    if (card === null) { return res.status(NOT_FOUND).send({ message: 'Карточка с таким id не найдена' }); }
     res.send({ card });
   })
   .catch((err) => {
-    if (err.name === 'CastError') { return res.status(400).send({ message: 'Передан некорректный id карточки' }); }
-    return res.status(500).send({ message: err.message });
+    if (err.name === 'CastError') { return res.status(BAD_REQUEST).send({ message: 'Передан некорректный id карточки' }); }
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
   });
 
 module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
@@ -33,15 +34,16 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   { new: true },
 // eslint-disable-next-line consistent-return
 ).then((card) => {
-  if (card === null) { return res.status(404).send({ message: 'Карточка с таким id не найдена' }); }
+  if (card === null) { return res.status(NOT_FOUND).send({ message: 'Карточка с таким id не найдена' }); }
   res.send({ card });
 }).catch((err) => {
-  if (err.name === 'CastError') { return res.status(400).send({ message: 'Передан некорректный id' }); }
-  return res.status(500).send({ message: err.message });
+  if (err.name === 'CastError') { return res.status(BAD_REQUEST).send({ message: 'Передан некорректный id' }); }
+  return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
 });
 
 module.exports.getCards = (req, res) => Card.find({}).populate(['owner', 'likes'])
-  .then((cards) => res.send(cards)).catch((err) => res.status(500).send({ message: err.message }));
+  // eslint-disable-next-line max-len
+  .then((cards) => res.send(cards)).catch((err) => res.status(INTERNAL_SERVER_ERROR).send({ message: err.message }));
 
 module.exports.deleteCard = (req, res) => Card.findByIdAndRemove(
   req.params.cardId,
@@ -49,10 +51,10 @@ module.exports.deleteCard = (req, res) => Card.findByIdAndRemove(
   .populate(['owner', 'likes'])
   // eslint-disable-next-line consistent-return
   .then((card) => {
-    if (card === null) { return res.status(404).send({ message: 'Карточка с таким id не найдена' }); }
+    if (card === null) { return res.status(NOT_FOUND).send({ message: 'Карточка с таким id не найдена' }); }
     res.send({ card });
   })
   .catch((err) => {
-    if (err.name === 'CastError') { return res.status(400).send({ message: 'Передан некорректный id' }); }
-    return res.status(500).send({ message: err.message });
+    if (err.name === 'CastError') { return res.status(BAD_REQUEST).send({ message: 'Передан некорректный id' }); }
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
   });

@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { NOT_FOUND } = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -22,7 +23,7 @@ app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
 
 app.all('*', (req, res) => {
-  res.status(404).send({ message: 'Неправильный путь' });
+  res.status(NOT_FOUND).send({ message: 'Неправильный путь' });
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
