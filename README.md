@@ -1,7 +1,8 @@
 [![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
 # Проект Mesto фронтенд + бэкенд
 
-https://github.com/AndreiSalnikov/express-mesto-gha
+Ссылка на репозиторий, в котором ведётся работа: https://github.com/AndreiSalnikov/express-mesto-gha
+
 ## Директории
 
 `/routes` — папка с файлами роутера  
