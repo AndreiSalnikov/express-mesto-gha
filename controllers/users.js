@@ -8,13 +8,14 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
-    .then((user) => res.send({ data: user }))
+    // eslint-disable-next-line consistent-return
+    .then((user) => {
+      if (user === null) { return res.status(404).send({ message: 'Пользователь по указанному _id не найден' }); }
+      res.send({ data: user });
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Некорректный _id' });
-      }
-      if (res.data === null) {
-        return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
       }
       return res.status(500).send({ message: err.message });
     });

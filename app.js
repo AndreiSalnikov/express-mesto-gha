@@ -13,9 +13,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '63ac0567d82c0cf9d725ff4b', // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '63ac0567d82c0cf9d725ff4b',
   };
-
   next();
 });
 
