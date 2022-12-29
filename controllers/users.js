@@ -4,7 +4,7 @@ const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
   User.find({}).then((users) => res.send({ users }))
-    .catch((err) => res.status(INTERNAL_SERVER_ERROR).send({ message: err.message }));
+    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -19,7 +19,7 @@ module.exports.getUserById = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -30,11 +30,11 @@ module.exports.createUser = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя' });
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
-module.exports.updateUser = (req, res) => {
+const updateUser = (req, res) => {
   User.findByIdAndUpdate(req.user._id, req.body, {
     new: true,
     runValidators: true,
@@ -46,22 +46,18 @@ module.exports.updateUser = (req, res) => {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении данных пользователя' });
       }
       if (err.name === 'CastError') { return res.status(NOT_FOUND).send({ message: 'Пользователь с таким id не найден' }); }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
+module.exports.updateProfile = (req, res) => {
+  const { name, about } = req.body; // чтобы валидация не ломалась
+  req.body = { name, about }; // чтобы валидация не ломалась
+  return updateUser(req, res);
+};
+
 module.exports.updateAvatar = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, req.body, {
-    new: true,
-    runValidators: true,
-    upsert: true,
-  })
-    .then((user) => res.send({ user }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара пользователя' });
-      }
-      if (err.name === 'CastError') { return res.status(NOT_FOUND).send({ message: 'Пользователь с таким id не найден' }); }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
-    });
+  const { avatar } = req.body; // чтобы валидация не ломалась
+  req.body = { avatar }; // чтобы валидация не ломалась
+  return updateUser(req, res);
 };
