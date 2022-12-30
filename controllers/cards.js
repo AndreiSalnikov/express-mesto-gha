@@ -21,7 +21,7 @@ const toggleLike = (option, req, res) => Card.findByIdAndUpdate(
   // eslint-disable-next-line consistent-return
   .then((card) => {
     if (card === null) { return res.status(NOT_FOUND).send({ message: 'Карточка с таким id не найдена' }); }
-    res.send({ card });
+    res.send(card);
   })
   .catch((err) => {
     if (err.name === 'CastError') { return res.status(BAD_REQUEST).send({ message: 'Передан некорректный id карточки' }); }
@@ -43,7 +43,7 @@ module.exports.deleteCard = (req, res) => Card.findByIdAndRemove(
   // eslint-disable-next-line consistent-return
   .then((card) => {
     if (card === null) { return res.status(NOT_FOUND).send({ message: 'Карточка с таким id не найдена' }); }
-    res.send({ card });
+    res.send(card);
   })
   .catch((err) => {
     if (err.name === 'CastError') { return res.status(BAD_REQUEST).send({ message: 'Передан некорректный id' }); }
