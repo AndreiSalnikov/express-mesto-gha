@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-// Опишем схему:
+
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,

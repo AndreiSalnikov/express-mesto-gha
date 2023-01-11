@@ -1,40 +1,76 @@
-const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../utils/constants');
-
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const BadRequest = require('../errors/BadRequest');
+const NotFound = require('../errors/NotFound');
+// const UnauthorizedError = require('../errors/UnauthorizedError');
+const ConflictError = require('../errors/ConflictError');
 
-module.exports.getUsers = (req, res) => {
+const { JWT_SECRET = 'f218f886dc3a297935b07862ac035d827f1ec5599a9867adb95e63e0f55f310b' } = process.env;
+const {
+  UNAUTHORIZED,
+} = require('../utils/constants');
+
+module.exports.getUsers = (req, res, next) => {
   User.find({}).then((users) => res.send(users))
-    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' }));
+    .catch(next);
 };
 
-module.exports.getUserById = (req, res) => {
-  const { userId } = req.params;
-  User.findById(userId)
+module.exports.getMe = (req, res, next) => {
+  const { _id } = req.params;
+  User.findById(_id)
     // eslint-disable-next-line consistent-return
     .then((user) => {
-      if (user === null) { return res.status(NOT_FOUND).send({ message: 'Пользователь с таким id не найден' }); }
+      if (user === null) { throw new NotFound('Пользователь с таким id не найден'); }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
+        next(new BadRequest('Некорректный id'));
+      } else {
+        next(err);
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
-module.exports.createUser = (req, res) => {
-  User.create({ ...req.body })
+module.exports.getUserById = (req, res, next) => {
+  const { userId } = req.params;
+  User.findById(userId)
+    // eslint-disable-next-line consistent-return
+    .then((user) => {
+      if (user === null) { throw new NotFound('Пользователь с таким id не найден'); }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequest('Некорректный id'));
+      } else { next(err); }
+    });
+};
+
+module.exports.createUser = (req, res, next) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash, // записываем хеш в базу
+    }))
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя' });
-      }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+      if (err.code === 11000) {
+        next(new ConflictError('Такой пользователь уже существует'));
+      } else if (err.name === 'ValidationError') {
+        next(new BadRequest('Некорректный id'));
+      } else { next(err); }
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, req.body, {
     new: true,
     runValidators: true,
@@ -43,10 +79,10 @@ const updateUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении данных пользователя' });
+        next(new BadRequest('Переданы некорректные данные при обновлении данных пользователя'));
+      } else if (err.name === 'CastError') { next(new NotFound('Пользователь с таким id не найден')); } else {
+        next(err);
       }
-      if (err.name === 'CastError') { return res.status(NOT_FOUND).send({ message: 'Пользователь с таким id не найден' }); }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -60,4 +96,26 @@ module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body; // чтобы валидация не ломалась
   req.body = { avatar }; // чтобы валидация не ломалась
   return updateUser(req, res);
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+      res.cookie('jwt', token, {
+        maxAge: 3600000,
+        httpOnly: true,
+      });
+      // вернём токен
+      res.send(token);
+    }) // ДОПИЛИТЬ
+    .catch((err) => {
+      console.log(err.name);
+      res
+        .status(UNAUTHORIZED)
+        .send({ message: err.message });
+    });
 };
