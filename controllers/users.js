@@ -3,13 +3,9 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFound');
-// const UnauthorizedError = require('../errors/UnauthorizedError');
 const ConflictError = require('../errors/ConflictError');
 
 const { JWT_SECRET = 'f218f886dc3a297935b07862ac035d827f1ec5599a9867adb95e63e0f55f310b' } = process.env;
-const {
-  UNAUTHORIZED,
-} = require('../utils/constants');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({}).then((users) => res.send(users))
@@ -104,7 +100,7 @@ module.exports.updateAvatar = (req, res) => {
   return updateUser(req, res);
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -115,13 +111,10 @@ module.exports.login = (req, res) => {
         maxAge: 3600000,
         httpOnly: true,
       });
-      // вернём токен
+      // вернём токен дополнительно
       res.send({ token });
-    }) // ДОПИЛИТЬ
+    })
     .catch((err) => {
-      console.log(err.name);
-      res
-        .status(UNAUTHORIZED)
-        .send({ message: err.message });
+      next(err);
     });
 };
