@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFound');
+const Forbidden = require('../errors/Forbidden');
 
 module.exports.createCard = (req, res, next) => {
   Card.create({ ...req.body, owner: req.user._id })
@@ -46,6 +47,9 @@ module.exports.deleteCard = (req, res, next) => Card.findByIdAndRemove(
   // eslint-disable-next-line consistent-return
   .then((card) => {
     if (card === null) { throw new NotFound('Карточка с таким id не найдена'); }
+    if (card.owner.id !== req.user._id) {
+      throw new Forbidden('Вы не можете удалить чужую карточку');
+    }
     res.send(card);
   })
   .catch((err) => {
