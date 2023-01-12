@@ -17,7 +17,7 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getMe = (req, res, next) => {
-  const { _id } = req.params;
+  const { _id } = req.user;
   User.findById(_id)
     // eslint-disable-next-line consistent-return
     .then((user) => {
@@ -60,7 +60,13 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash, // записываем хеш в базу
     }))
-    .then((user) => res.send(user))
+    .then((user) => res.send({
+      _id: user._id,
+      name,
+      about,
+      avatar,
+      email,
+    }))
     .catch((err) => {
       if (err.code === 11000) {
         next(new ConflictError('Такой пользователь уже существует'));
@@ -110,7 +116,7 @@ module.exports.login = (req, res) => {
         httpOnly: true,
       });
       // вернём токен
-      res.send(token);
+      res.send({ token });
     }) // ДОПИЛИТЬ
     .catch((err) => {
       console.log(err.name);
