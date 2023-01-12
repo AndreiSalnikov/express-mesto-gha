@@ -31,9 +31,9 @@ const toggleLike = (option, req, res, next) => Card.findByIdAndUpdate(
     }
   });
 
-module.exports.likeCard = (req, res) => toggleLike('$addToSet', req, res);
+module.exports.likeCard = (req, res, next) => toggleLike('$addToSet', req, res, next);
 
-module.exports.dislikeCard = (req, res) => toggleLike('$pull', req, res);
+module.exports.dislikeCard = (req, res, next) => toggleLike('$pull', req, res, next);
 
 module.exports.getCards = (req, res, next) => Card.find({}).populate(['owner', 'likes'])
   // eslint-disable-next-line max-len
