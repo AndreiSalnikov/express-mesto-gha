@@ -76,7 +76,7 @@ const updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, req.body, {
     new: true,
     runValidators: true,
-    upsert: true,
+    upsert: false,
   })
     .then((user) => res.send(user))
     .catch((err) => {
