@@ -5,7 +5,7 @@ const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFound');
 const ConflictError = require('../errors/ConflictError');
 
-const { JWT_SECRET = 'f218f886dc3a297935b07862ac035d827f1ec5599a9867adb95e63e0f55f310b' } = process.env;
+const { JWT_SECRET } = process.env;
 
 module.exports.getUsers = (req, res, next) => {
   User.find({}).then((users) => res.send(users))
