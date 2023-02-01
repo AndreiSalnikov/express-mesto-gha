@@ -11,7 +11,7 @@ const errorHandler = require('./errors/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { limiter } = require('./utils/constants');
 
-const { PORT = 3000, MONGODB_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
+const { PORT = 3000, MONGODB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 if (process.env.NODE_ENV !== 'production') {
   process.env.JWT_SECRET = 'devKey';
 }
@@ -46,5 +46,7 @@ app.use(errorHandler);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.listen(PORT, () => {
+  console.log(process.env.NODE_ENV);
+  console.log(process.env.JWT_SECRET);
   console.log(`App listening on port ${PORT}`);
 });

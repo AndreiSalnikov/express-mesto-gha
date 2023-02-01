@@ -5,8 +5,6 @@ const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFound');
 const ConflictError = require('../errors/ConflictError');
 
-const { JWT_SECRET } = process.env;
-
 module.exports.getUsers = (req, res, next) => {
   User.find({}).then((users) => res.send(users))
     .catch(next);
@@ -106,7 +104,7 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       // создадим токен
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
       res.cookie('jwt', token, {
         maxAge: 3600000,
         httpOnly: true,
