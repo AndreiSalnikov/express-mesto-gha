@@ -1,4 +1,5 @@
 require('dotenv').config();
+const cors = require('cors');
 const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -24,6 +25,7 @@ mongoose.connect(MONGODB_URL);
 app.use(helmet());
 app.use(requestLogger);
 app.use(limiter);
+app.use(cors({ origin: 'mestoforyou.nomoredomainsclub.ru' }));
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
