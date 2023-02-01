@@ -25,7 +25,9 @@ mongoose.connect(MONGODB_URL);
 app.use(helmet());
 app.use(requestLogger);
 app.use(limiter);
-app.use(cors({ origin: 'https://mestoforyou.nomoredomainsclub.ru' }));
+app.use(cors({
+  origin: 'https://mestoforyou.nomoredomainsclub.ru',
+}));
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
