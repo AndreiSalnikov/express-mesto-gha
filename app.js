@@ -26,7 +26,7 @@ app.use(helmet());
 app.use(requestLogger);
 app.use(limiter);
 app.use(cors({
-  origin: '*',
+  origin: 'https://mestoforyou.nomoredomainsclub.ru',
   methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
 }));
 app.get('/crash-test', () => {
