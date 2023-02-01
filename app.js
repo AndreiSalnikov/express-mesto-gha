@@ -26,7 +26,8 @@ app.use(helmet());
 app.use(requestLogger);
 app.use(limiter);
 app.use(cors({
-  origin: 'https://mestoforyou.nomoredomainsclub.ru',
+  origin: '*',
+  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
 }));
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -50,7 +51,5 @@ app.use(errorHandler);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.listen(PORT, () => {
-  console.log(process.env.NODE_ENV);
-  console.log(process.env.JWT_SECRET);
   console.log(`App listening on port ${PORT}`);
 });
