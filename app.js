@@ -3,7 +3,6 @@ const cors = require('cors');
 const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
 const NotFound = require('./errors/NotFound');
@@ -18,9 +17,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.json());
 mongoose.connect(MONGODB_URL);
 app.use(helmet());
 app.use(requestLogger);
