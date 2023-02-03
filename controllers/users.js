@@ -100,7 +100,6 @@ module.exports.updateAvatar = (req, res) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  const NODE_ENV = process.env;
   return User.findUserByCredentials(email, password)
     .then((user) => {
       // создадим токен
@@ -109,7 +108,7 @@ module.exports.login = (req, res, next) => {
       //   maxAge: 3600000,
       //   httpOnly: true,
       // });
-      res.send({ token, NODE_ENV });
+      res.send({ token });
     })
     .catch((err) => {
       next(err);
