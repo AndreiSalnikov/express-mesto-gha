@@ -1,6 +1,5 @@
 require('dotenv').config();
 const cors = require('cors');
-const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
@@ -46,7 +45,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.use(express.static(path.join(__dirname, 'public')));
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });

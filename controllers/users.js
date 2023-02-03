@@ -65,7 +65,7 @@ module.exports.createUser = (req, res, next) => {
       if (err.code === 11000) {
         next(new ConflictError('Такой пользователь уже существует'));
       } else if (err.name === 'ValidationError') {
-        next(new BadRequest('Некорректный id'));
+        next(new BadRequest('Переданые некорректные данные для создания пользователя'));
       } else { next(err); }
     });
 };
@@ -80,7 +80,7 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequest('Переданы некорректные данные при обновлении данных пользователя'));
-      } else if (err.name === 'CastError') { next(new NotFound('Пользователь с таким id не найден')); } else {
+      } else if (err.name === 'CastError') { next(new NotFound('Некорректный id')); } else {
         next(err);
       }
     });
@@ -110,7 +110,7 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
       });
       // вернём токен дополнительно
-      res.send({ token });
+      res.send({ token, jwt });
     })
     .catch((err) => {
       next(err);
