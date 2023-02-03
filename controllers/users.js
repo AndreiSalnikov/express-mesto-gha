@@ -109,6 +109,7 @@ module.exports.login = (req, res, next) => {
       //   maxAge: 3600000,
       //   httpOnly: true,
       // });
+      console.log(process.env.JWT_SECRET);
       res.send({ token });
     })
     .catch((err) => {
