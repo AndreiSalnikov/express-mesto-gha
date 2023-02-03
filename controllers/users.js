@@ -105,10 +105,10 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       // создадим токен
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-      res.cookie('jwt', token, {
-        maxAge: 3600000,
-        httpOnly: true,
-      });
+      // res.cookie('jwt', token, {
+      //   maxAge: 3600000,
+      //   httpOnly: true,
+      // });
       // вернём токен дополнительно
       res.send({ token, jwt });
     })
