@@ -110,7 +110,7 @@ module.exports.login = (req, res, next) => {
       //   httpOnly: true,
       // });
       // вернём токен дополнительно
-      res.send({ token, jwt });
+      res.send({ token });
     })
     .catch((err) => {
       next(err);
