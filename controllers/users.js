@@ -97,7 +97,7 @@ module.exports.updateAvatar = (req, res) => {
   req.body = { avatar }; // чтобы валидация не ломалась
   return updateUser(req, res);
 };
-
+const { NODE_ENV } = process.env;
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -109,8 +109,7 @@ module.exports.login = (req, res, next) => {
       //   maxAge: 3600000,
       //   httpOnly: true,
       // });
-      console.log(process.env.JWT_SECRET);
-      res.send({ token });
+      res.send({ token, NODE_ENV });
     })
     .catch((err) => {
       next(err);

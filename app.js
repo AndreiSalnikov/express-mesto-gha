@@ -14,6 +14,7 @@ const { PORT = 3000, MONGODB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = proce
 if (process.env.NODE_ENV !== 'production') {
   process.env.JWT_SECRET = 'devKey';
 }
+
 const app = express();
 
 app.use(express.json());
