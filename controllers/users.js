@@ -97,10 +97,10 @@ module.exports.updateAvatar = (req, res) => {
   req.body = { avatar }; // чтобы валидация не ломалась
   return updateUser(req, res);
 };
-const { NODE_ENV } = process.env;
+
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
+  const { NODE_ENV } = process.env;
   return User.findUserByCredentials(email, password)
     .then((user) => {
       // создадим токен
