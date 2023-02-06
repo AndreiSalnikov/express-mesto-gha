@@ -80,7 +80,7 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequest('Переданы некорректные данные при обновлении данных пользователя'));
-      } else if (err.name === 'CastError') { next(new NotFound('Некорректный id')); } else {
+      } else if (err.name === 'CastError') { next(new BadRequest('Некорректный id')); } else {
         next(err);
       }
     });

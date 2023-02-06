@@ -36,9 +36,10 @@ module.exports.likeCard = (req, res, next) => toggleLike('$addToSet', req, res, 
 
 module.exports.dislikeCard = (req, res, next) => toggleLike('$pull', req, res, next);
 
-module.exports.getCards = (req, res, next) => Card.find({}).populate(['owner', 'likes'])
+module.exports.getCards = (req, res, next) => Card.find({}).populate(['owner', 'likes']).sort({ createdAt: -1 })
   // eslint-disable-next-line max-len
-  .then((cards) => res.send(cards)).catch(next);
+  .then((cards) => res.send(cards))
+  .catch(next);
 
 module.exports.deleteCard = (req, res, next) => Card.findByIdAndRemove(
   req.params.cardId,

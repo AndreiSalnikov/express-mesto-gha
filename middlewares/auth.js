@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
     const token = authorization.replace('Bearer ', '');
     req.user = jwt.verify(token, process.env.JWT_SECRET); // записываем пейлоуд в объект запроса
   } catch (err) {
-    next(err);
+    throw new UnauthorizedError('Необходима авторизация');
   }
   next(); // пропускаем запрос дальше
 };
