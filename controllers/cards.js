@@ -47,23 +47,8 @@ module.exports.deleteCard = (req, res, next) => Card.findById(req.params.cardId)
     throw new Forbidden('Вы не можете удалить чужую карточку');
   }
   return card.remove().then(res.send(card));
-  // res.send(card);
-})
-
-  /* Card.findByIdAndRemove(
-  req.params.cardId,
-)
-  .populate(['owner', 'likes'])
-  // eslint-disable-next-line consistent-return
-  .then((card) => {
-    if (card === null) { throw new NotFound('Карточка с таким id не найдена'); }
-    if (card.owner.id.toString() !== req.user._id) {
-      throw new Forbidden('Вы не можете удалить чужую карточку');
-    }
-    res.send(card);
-  }) */
-  .catch((err) => {
-    if (err.name === 'CastError') { next(new BadRequest('Передан некорректный id')); } else {
-      next(err);
-    }
-  });
+}).catch((err) => {
+  if (err.name === 'CastError') { next(new BadRequest('Передан некорректный id')); } else {
+    next(err);
+  }
+});

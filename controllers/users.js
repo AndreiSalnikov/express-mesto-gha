@@ -86,18 +86,6 @@ module.exports.updateUser = (req, res, next) => {
     });
 };
 
-// module.exports.updateProfile = (req, res) => {
-//   const { name, about } = req.body; // чтобы валидация не ломалась
-//   req.body = { name, about }; // чтобы валидация не ломалась
-//   return updateUser(req, res);
-// };
-
-// module.exports.updateAvatar = (req, res) => {
-//   const { avatar } = req.body; // чтобы валидация не ломалась
-//   req.body = { avatar }; // чтобы валидация не ломалась
-//   return updateUser(req, res);
-// };
-
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
