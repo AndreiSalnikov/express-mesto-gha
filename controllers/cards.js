@@ -41,7 +41,16 @@ module.exports.getCards = (req, res, next) => Card.find({}).populate(['owner', '
   .then((cards) => res.send(cards))
   .catch(next);
 
-module.exports.deleteCard = (req, res, next) => Card.findByIdAndRemove(
+module.exports.deleteCard = (req, res, next) => Card.findById(req.params.cardId).populate(['owner', 'likes']).then((card) => {
+  if (card === null) { throw new NotFound('Карточка с таким id не найдена'); }
+  if (card.owner.id.toString() !== req.user._id) {
+    throw new Forbidden('Вы не можете удалить чужую карточку');
+  }
+  return card.remove().then(res.send(card));
+  // res.send(card);
+})
+
+  /* Card.findByIdAndRemove(
   req.params.cardId,
 )
   .populate(['owner', 'likes'])
@@ -52,7 +61,7 @@ module.exports.deleteCard = (req, res, next) => Card.findByIdAndRemove(
       throw new Forbidden('Вы не можете удалить чужую карточку');
     }
     res.send(card);
-  })
+  }) */
   .catch((err) => {
     if (err.name === 'CastError') { next(new BadRequest('Передан некорректный id')); } else {
       next(err);
