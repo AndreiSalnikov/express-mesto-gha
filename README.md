@@ -1,6 +1,6 @@
 [![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
-# Проект Mesto фронтенд + бэкенд
-11
+# Бэкенд проекта Mesto 
+
 Бэкенд на express в связке с mongoDB, для предыдущего проекта: <a href="https://github.com/AndreiSalnikov/mesto-react">место</a>
 
 Ссылка на репозиторий, в котором ведётся работа: <a href="https://github.com/AndreiSalnikov/express-mesto-gha">место-экспресс</a> (для ревью)
@@ -17,3 +17,18 @@
 
 `npm run start` — запускает сервер   
 `npm run dev` — запускает сервер с hot-reload
+
+## Технологии
+* Node.js
+* Express.js
+* MongoDB + Mongoose.js
+
+## Функции
+* авторизация пользователя;
+* аутентификация через JWT;
+* редактирование данных профиля пользователя;
+* размещение и удаление картинок;
+* возможность лайкать картинки;
+
+## Планы по дальнейшей доработке проекта:
+* сделать авторизацию через куки
