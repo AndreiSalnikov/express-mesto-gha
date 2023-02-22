@@ -23,7 +23,7 @@ app.use(helmet());
 app.use(requestLogger);
 app.use(limiter);
 app.use(cors({
-  origin: ['https://mestoforyou.nomoredomainsclub.ru', 'http://localhost:3000'],
+  origin: ['https://mestoforyou.nomoredomainsclub.ru', 'http://localhost:3000', 'https://andreisalnikov.github.io'],
   methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
 }));
 app.get('/crash-test', () => {
